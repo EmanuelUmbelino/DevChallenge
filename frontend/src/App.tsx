@@ -4,15 +4,28 @@ import './App.css';
 
 import { response } from "./api/mocked";
 import MovieList from "./components/MovieList";
+import SearchInput from "./components/SearchInput";
+import { Container, createTheme, TextField } from "@material-ui/core";
+import { ThemeProvider } from "@emotion/react";
 
 const movieList = response.Search;
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 function App() {
+
   return (
     <div className="App">
-      <header className="App-header">
-        <MovieList movieList={movieList} />
-      </header>
+      <ThemeProvider theme={darkTheme}>
+        <Container>
+          <SearchInput />
+          {/* <TextField fullWidth size="small" label="Search" id="search" /> */}
+          <MovieList movieList={movieList} />
+        </Container>
+      </ThemeProvider>
     </div>
   );
 }
