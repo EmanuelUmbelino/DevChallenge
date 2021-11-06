@@ -1,16 +1,30 @@
-import { FormControl, Input, InputAdornment, InputLabel, OutlinedInput } from "@material-ui/core";
+import { FormControl, InputAdornment, InputLabel, OutlinedInput } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 import * as React from "react";
 
-class SearchInput extends React.Component {
+type Prop = {
+    search: string;
+    onSearchChange: (search: string) => void;
+}
+class SearchInput extends React.Component<Prop> {
+    constructor(props: Prop) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(e: any) {
+        this.props.onSearchChange(e.target.value);
+    }
+
     render() {
+        const search = this.props.search;
         return (
             <FormControl fullWidth size="small" variant="outlined">
                 <InputLabel htmlFor="search">
                     Search
                 </InputLabel>
                 <OutlinedInput
-                    id="search"
+                    id="search" value={search} onChange={this.handleChange}
                     endAdornment={
                         <InputAdornment position="end">
                             <Search />

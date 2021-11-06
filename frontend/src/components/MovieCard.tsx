@@ -19,7 +19,7 @@ class MovieCard extends React.Component<Prop> {
             <Card sx={{ maxWidth: 200 }}>
                 <CardMedia component="img" image={movie.Poster} />
                 <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
+                    <Typography gutterBottom variant="subtitle2" component="div">
                         {movie.Title}
                     </Typography>
                 </CardContent>
