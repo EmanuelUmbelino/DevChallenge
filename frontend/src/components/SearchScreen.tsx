@@ -22,10 +22,9 @@ class SearchScreen extends React.Component<Prop, State> {
     }
 
     searchChange(search: string) {
+        this.setState({ search });
         searchMovie(search).then((movieList) => {
-            this.setState({
-                movieList: movieList, search
-            });
+            this.setState({ movieList: movieList });
         });
     }
 
