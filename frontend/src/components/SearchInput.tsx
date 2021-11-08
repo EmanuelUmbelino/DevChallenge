@@ -1,4 +1,4 @@
-import { FormControl, InputAdornment, InputLabel, OutlinedInput } from "@material-ui/core";
+import { InputAdornment, TextField } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 import * as React from "react";
 
@@ -19,19 +19,16 @@ class SearchInput extends React.Component<Prop> {
     render() {
         const search = this.props.search;
         return (
-            <FormControl fullWidth size="small" variant="outlined">
-                <InputLabel htmlFor="search">
-                    Search
-                </InputLabel>
-                <OutlinedInput
-                    id="search" value={search} onChange={this.handleChange}
-                    endAdornment={
+            <TextField sx={{ my: 2 }} fullWidth label="Search" size="small" variant="outlined"
+                value={search} onChange={this.handleChange}
+                InputProps={{
+                    endAdornment: (
                         <InputAdornment position="end">
                             <Search />
                         </InputAdornment>
-                    }
-                />
-            </FormControl>
+                    ),
+                }}
+            />
         );
     }
 }

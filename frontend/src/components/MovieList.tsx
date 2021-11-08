@@ -5,9 +5,8 @@ import MovieCard, { Movie } from "./MovieCard";
 class MovieList extends React.Component<{ movieList: Movie[] }> {
     render() {
         const list = this.props.movieList.map((movie) =>
-
-            <Grid item>
-                <MovieCard key={movie.imdbID} movie={movie} />
+            <Grid item key={movie.imdbID}>
+                <MovieCard movie={movie} />
             </Grid>
         );
         return (
