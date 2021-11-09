@@ -1,9 +1,8 @@
-import { Movie } from '../movie.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ReturnMovieDto {
+export class ReturnLoginDto {
     @ApiProperty()
-    movie: Movie;
+    token: string;
 
     @ApiProperty()
     message: string[];

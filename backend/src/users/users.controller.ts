@@ -23,12 +23,18 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from './user.entity';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
+import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+
+@ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
 @UseGuards(AuthGuard(), RolesGuard)
 export class UsersController {
     constructor(private usersService: UsersService) { }
 
     @Post()
+    @ApiResponse({ status: 201, description: 'Administrator successfully registered', type: ReturnUserDto })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     @Role(UserRole.ADMIN)
     async createAdminUser(
         @Body(ValidationPipe) createUserDto: CreateUserDto,
@@ -41,6 +47,8 @@ export class UsersController {
     }
 
     @Get(':id')
+    @ApiResponse({ status: 200, description: 'User found', type: ReturnUserDto })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async findUserById(@Param('id') id): Promise<ReturnUserDto> {
         const user = await this.usersService.findUserById(id);
         return {
@@ -50,6 +58,8 @@ export class UsersController {
     }
 
     @Patch(':id')
+    @ApiResponse({ status: 200, description: 'User updated', type: User })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async updateUser(
         @Param('id') id: string,
         @Body(ValidationPipe) updateUserDto: UpdateUserDto,
@@ -63,6 +73,8 @@ export class UsersController {
     }
 
     @Patch(':id/change-password')
+    @ApiResponse({ status: 200, description: 'Password changed' })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     @UseGuards(AuthGuard())
     async changePassword(
         @Param('id') id: string,
@@ -76,11 +88,13 @@ export class UsersController {
 
         await this.usersService.changePassword(changePasswordDto, user.id);
         return {
-            message: 'Senha alterada',
+            message: 'Password changed',
         };
     }
 
     @Delete(':id')
+    @ApiResponse({ status: 200, description: 'User removed successfully' })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     @Role(UserRole.ADMIN)
     async deleteUser(@Param('id') id: string) {
         await this.usersService.deleteUser(id);
