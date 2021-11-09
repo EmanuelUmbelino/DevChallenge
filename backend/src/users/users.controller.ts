@@ -21,6 +21,7 @@ import { UserRole } from './user-roles.enum';
 import { UpdateUserDto } from './dto/update-users.dto';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from './user.entity';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard(), RolesGuard)
@@ -59,6 +60,24 @@ export class UsersController {
         } else {
             return this.usersService.updateUser(updateUserDto, id);
         }
+    }
+
+    @Patch(':id/change-password')
+    @UseGuards(AuthGuard())
+    async changePassword(
+        @Param('id') id: string,
+        @Body(ValidationPipe) changePasswordDto: ChangePasswordDto,
+        @GetUser() user: User,
+    ) {
+        if (user.role !== UserRole.ADMIN && user.id.toString() !== id)
+            throw new ForbiddenException(['You are not authorized to access this feature'],);
+        if (user.email !== changePasswordDto.email)
+            throw new UnauthorizedException(['Invalid credentials']);
+
+        await this.usersService.changePassword(changePasswordDto, user.id);
+        return {
+            message: 'Senha alterada',
+        };
     }
 
     @Delete(':id')

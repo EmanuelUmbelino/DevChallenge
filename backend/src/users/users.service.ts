@@ -11,6 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UserRole } from './user-roles.enum';
 import { UpdateUserDto } from './dto/update-users.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -50,6 +51,21 @@ export class UsersService {
         } catch (error) {
             throw new InternalServerErrorException(['Error saving user to database'],);
         }
+    }
+
+    async changePassword(changePasswordDto: ChangePasswordDto, id: string): Promise<void> {
+        const { newPassword, passwordConfirmation } = changePasswordDto;
+
+        if (newPassword != passwordConfirmation)
+            throw new UnprocessableEntityException('As senhas não conferem');
+
+        const user = await this.userRepository.checkCredentials(changePasswordDto);
+
+        if (user === null) {
+            throw new UnauthorizedException(['Invalid credentials']);
+        }
+
+        await this.userRepository.changePassword(id, newPassword);
     }
 
     async deleteUser(userId: string) {
