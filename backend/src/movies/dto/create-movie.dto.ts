@@ -18,15 +18,15 @@ export class CreateMovieDto {
     @MaxLength(200, { message: 'The title must be less than 200 characters', })
     title: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsOptional()
     year: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsOptional()
     type: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsOptional()
     poster: string;
 }

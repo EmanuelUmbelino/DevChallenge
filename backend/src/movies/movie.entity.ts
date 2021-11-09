@@ -19,15 +19,15 @@ export class Movie extends BaseEntity {
     @Column({ nullable: false, type: 'varchar', length: 200 })
     title: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @Column({ nullable: true, type: 'varchar', length: 20 })
     year: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @Column({ nullable: true, type: 'varchar', length: 200 })
     type: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @Column({ nullable: true, type: 'varchar', length: 400 })
     poster: string;
 }
