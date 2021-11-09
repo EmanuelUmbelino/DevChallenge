@@ -39,17 +39,12 @@ export class UsersService {
     }
 
     async updateUser(updateUserDto: UpdateUserDto, id: string): Promise<User> {
-        const user = await this.findUserById(id);
-        const { name, email, role, status } = updateUserDto;
-        user.name = name ? name : user.name;
-        user.email = email ? email : user.email;
-        user.role = role ? role : user.role;
-        user.status = status === undefined ? user.status : status;
-        try {
-            await user.save();
+        const result = await this.userRepository.update({ id }, updateUserDto);
+        if (result.affected > 0) {
+            const user = await this.findUserById(id);
             return user;
-        } catch (error) {
-            throw new InternalServerErrorException(['Error saving user to database'],);
+        } else {
+            throw new NotFoundException('Usuário não encontrado');
         }
     }
 
