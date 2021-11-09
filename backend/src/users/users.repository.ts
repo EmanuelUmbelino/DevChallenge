@@ -8,6 +8,7 @@ import {
     ConflictException,
     InternalServerErrorException,
 } from '@nestjs/common';
+import { CredentialsDto } from '../auth/dto/credentials.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -38,6 +39,17 @@ export class UserRepository extends Repository<User> {
                     ['Error saving user to database'],
                 );
             }
+        }
+    }
+
+    async checkCredentials(credentialsDto: CredentialsDto): Promise<User> {
+        const { email, password } = credentialsDto;
+        const user = await this.findOne({ email, status: true });
+
+        if (user && (await user.checkPassword(password))) {
+            return user;
+        } else {
+            return null;
         }
     }
 
