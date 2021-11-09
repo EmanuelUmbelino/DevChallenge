@@ -4,6 +4,12 @@ import {
     Body,
     ValidationPipe,
     UseGuards,
+    Get,
+    Param,
+    Patch,
+    ForbiddenException,
+    Delete,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -12,14 +18,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Role } from '../auth/role.decorator';
 import { UserRole } from './user-roles.enum';
+import { UpdateUserDto } from './dto/update-users.dto';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from './user.entity';
 
 @Controller('users')
+@UseGuards(AuthGuard(), RolesGuard)
 export class UsersController {
     constructor(private usersService: UsersService) { }
 
     @Post()
     @Role(UserRole.ADMIN)
-    @UseGuards(AuthGuard(), RolesGuard)
     async createAdminUser(
         @Body(ValidationPipe) createUserDto: CreateUserDto,
     ): Promise<ReturnUserDto> {
@@ -27,6 +36,37 @@ export class UsersController {
         return {
             user,
             message: ['Administrator successfully registered'],
+        };
+    }
+
+    @Get(':id')
+    async findUserById(@Param('id') id): Promise<ReturnUserDto> {
+        const user = await this.usersService.findUserById(id);
+        return {
+            user,
+            message: ['User found'],
+        };
+    }
+
+    @Patch(':id')
+    async updateUser(
+        @Param('id') id: string,
+        @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+        @GetUser() user: User,
+    ) {
+        if (user.role != UserRole.ADMIN && user.id.toString() != id) {
+            throw new ForbiddenException(['You are not authorized to access this feature'],);
+        } else {
+            return this.usersService.updateUser(updateUserDto, id);
+        }
+    }
+
+    @Delete(':id')
+    @Role(UserRole.ADMIN)
+    async deleteUser(@Param('id') id: string) {
+        await this.usersService.deleteUser(id);
+        return {
+            message: ['User removed successfully'],
         };
     }
 }

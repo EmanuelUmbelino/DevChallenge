@@ -1,6 +1,7 @@
 import {
     IsEmail,
     IsNotEmpty,
+    IsString,
     MaxLength,
     MinLength,
 } from 'class-validator';
@@ -12,6 +13,7 @@ export class CreateUserDto {
     email: string;
 
     @IsNotEmpty({ message: 'Name is required', })
+    @IsString({ message: 'Enter a valid user name', })
     @MaxLength(200, { message: 'The user name must be less than 200 characters', })
     name: string;
 
