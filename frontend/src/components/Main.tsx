@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Box } from "@material-ui/system";
-import { Button, Container, Tab, Tabs } from "@material-ui/core";
-import { a11yProps, TabPanel } from "./TabPanel";
+import { Container, IconButton, Toolbar, Typography } from "@material-ui/core";
+import { TabPanel } from "./TabPanel";
 import SearchScreen from "./SearchScreen";
+import { CollectionsBookmark, Search } from "@material-ui/icons";
 
 type Prop = {
 }
@@ -26,15 +26,30 @@ class Main extends React.Component<Prop, State> {
     }
 
     isActive(page: number) {
-        return this.state.currPage === page ? 'contained' : 'outlined'
+        return this.state.currPage === page ? 'primary' : 'default';
     }
 
     render() {
         const currPage = this.state.currPage;
         return (
             <Container sx={{ my: 2 }}>
-                <Button sx={{ mx: 3 }} variant={this.isActive(0)} onClick={() => this.changePage(0)}>Search</Button>
-                <Button sx={{ mx: 1 }} variant={this.isActive(1)} onClick={() => this.changePage(1)}>My Library</Button>
+                <Toolbar>
+                    <Typography variant="h4" sx={{ mr: 5 }}>
+                        Moovy
+                    </Typography>
+                    <IconButton size="large" aria-label="search" onClick={() => this.changePage(0)} aria-haspopup="true" color={this.isActive(0)} >
+                        <Search />
+                        <Typography variant="button" sx={{ mx: 1 }}>
+                            Search
+                        </Typography>
+                    </IconButton>
+                    <IconButton size="large" aria-label="library" onClick={() => this.changePage(1)} aria-haspopup="true" color={this.isActive(1)} >
+                        <CollectionsBookmark />
+                        <Typography variant="button" sx={{ mx: 1 }}>
+                            My Library
+                        </Typography>
+                    </IconButton>
+                </Toolbar>
                 <TabPanel value={currPage} index={0}>
                     <SearchScreen />
                 </TabPanel>

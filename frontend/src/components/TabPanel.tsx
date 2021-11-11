@@ -17,16 +17,10 @@ export function TabPanel(props: TabPanelProps) {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
+                <Box sx={{ py: 1 }}>
                     {children}
                 </Box>
             )}
         </div>
     );
-}
-export function a11yProps(index: number) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
 }
