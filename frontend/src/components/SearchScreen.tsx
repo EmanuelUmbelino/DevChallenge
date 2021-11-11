@@ -1,4 +1,4 @@
-import { Container } from "@material-ui/core";
+import { Box } from "@material-ui/system";
 import * as React from "react";
 import { searchMovie } from "../api/omdb";
 import { Movie } from "./MovieCard";
@@ -43,11 +43,11 @@ class SearchScreen extends React.Component<Prop, State> {
         const search = this.state.search;
         const movieList = this.state.movieList;
         return (
-            <Container sx={{ my: 2 }}>
+            <Box>
                 <SearchInput
                     search={search} onSearchChange={this.searchChange} />
                 <MovieList movieList={movieList} />
-            </Container>
+            </Box>
         );
     }
 }
