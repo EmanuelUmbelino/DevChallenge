@@ -2,7 +2,6 @@ import {
     Injectable,
     UnprocessableEntityException,
     NotFoundException,
-    InternalServerErrorException,
     UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,7 +29,7 @@ export class UsersService {
 
     async findUserById(userId: string): Promise<User> {
         const user = await this.userRepository.findOne(userId, {
-            select: ['email', 'name', 'role', 'id'],
+            select: ['id', 'email', 'name', 'role'],
         });
 
         if (!user) throw new NotFoundException(['User not found']);
@@ -44,7 +43,7 @@ export class UsersService {
             const user = await this.findUserById(id);
             return user;
         } else {
-            throw new NotFoundException('Usuário não encontrado');
+            throw new NotFoundException(['User not found']);
         }
     }
 
@@ -52,7 +51,7 @@ export class UsersService {
         const { newPassword, passwordConfirmation } = changePasswordDto;
 
         if (newPassword != passwordConfirmation)
-            throw new UnprocessableEntityException('As senhas não conferem');
+            throw new UnprocessableEntityException(['Passwords do not match']);
 
         const user = await this.userRepository.checkCredentials(changePasswordDto);
 

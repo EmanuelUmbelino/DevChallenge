@@ -24,13 +24,18 @@ import { User } from './user.entity';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ReturnLibraryDto } from 'src/reviews/dto/return-library.dto';
+import { ReviewsService } from 'src/reviews/reviews.service';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
 @UseGuards(AuthGuard(), RolesGuard)
 export class UsersController {
-    constructor(private usersService: UsersService) { }
+    constructor(
+        private usersService: UsersService,
+        private reviewsService: ReviewsService
+    ) { }
 
     @Post()
     @ApiResponse({ status: 201, description: 'Administrator successfully registered', type: ReturnUserDto })
@@ -75,7 +80,6 @@ export class UsersController {
     @Patch(':id/change-password')
     @ApiResponse({ status: 200, description: 'Password changed' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    @UseGuards(AuthGuard())
     async changePassword(
         @Param('id') id: string,
         @Body(ValidationPipe) changePasswordDto: ChangePasswordDto,
@@ -100,6 +104,19 @@ export class UsersController {
         await this.usersService.deleteUser(id);
         return {
             message: ['User removed successfully'],
+        };
+    }
+
+    @Get(':id/library')
+    @ApiResponse({ status: 200, description: 'Current user info', type: ReturnLibraryDto })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    async getUserLibrary(
+        @Param('id') id: string,
+    ): Promise<ReturnLibraryDto> {
+        const library = await this.reviewsService.getReviewsByUser(id);
+        return {
+            library: library,
+            message: ['User library found'],
         };
     }
 }

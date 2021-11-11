@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Review } from 'src/reviews/review.entity';
+import { ReviewsService } from 'src/reviews/reviews.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { Movie } from './movie.entity';
 import { MoviesRepository } from './movies.repository';
@@ -9,6 +11,7 @@ export class MoviesService {
     constructor(
         @InjectRepository(MoviesRepository)
         private moviesRepository: MoviesRepository,
+        private reviewsService: ReviewsService,
     ) { }
 
     async createMovie(createMovieDto: CreateMovieDto): Promise<Movie> {
@@ -31,5 +34,16 @@ export class MoviesService {
         if (!movie) throw new NotFoundException(['Movie not found']);
 
         return movie;
+    }
+
+
+    async addToLibrary(imdbID: string, userId: string): Promise<Review> {
+        await this.findMovieByImdbId(imdbID);
+
+        return this.reviewsService.createReview(imdbID, userId);
+    }
+
+    async removeFromLibrary(imdbID: string, userId: string) {
+        await this.reviewsService.disableReview(imdbID, userId);
     }
 }

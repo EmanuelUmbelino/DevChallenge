@@ -6,10 +6,12 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from './user-roles.enum';
+import { Review } from 'src/reviews/review.entity';
 
 @Entity()
 @Unique(['email'])
@@ -50,6 +52,9 @@ export class User extends BaseEntity {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => Review, (review: Review) => review.movie)
+    library: Review[];
 
     async checkPassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt);
