@@ -1,52 +1,49 @@
 import { Box } from "@material-ui/system";
 import * as React from "react";
+import { Movie } from "../api/library";
 import { searchMovie } from "../api/omdb";
-import { Movie } from "./MovieCard";
 import MovieList from "./MovieList";
 import SearchInput from "./SearchInput";
 
 type Prop = {
+    addToLibrary: (movie: Movie) => void;
+    removeFromLibrary: (imdb: string) => void;
+    library: Map<string, Movie>;
 }
 type State = {
     search: string;
-    movieList: Movie[];
+    movieList: { movie: Movie, inLib: boolean }[];
 }
 class SearchScreen extends React.Component<Prop, State> {
     constructor(props: Prop) {
         super(props);
-        this.searchChange = this.searchChange.bind(this);
         this.state = {
-            search: '', movieList: [
-
-                {
-                    Title: "Beyond the Mat",
-                    Year: "1999",
-                    imdbID: "tt0218043",
-                    Type: "movie",
-                    Poster: "https://m.media-amazon.com/images/M/MV5BMTQ5NDUzODkyOF5BMl5BanBnXkFtZTcwNjY3OTIyMQ@@._V1_SX300.jpg"
-                }
-            ]
+            search: '', movieList: []
         };
+
+        this.searchChange = this.searchChange.bind(this);
     }
 
     componentDidMount() {
     }
 
-    searchChange(search: string) {
+    async searchChange(search: string) {
         this.setState({ search });
-        searchMovie(search).then((movieList) => {
-            this.setState({ movieList: movieList });
-        });
+        const movies = await searchMovie(search);
+        const movieList = movies.map(movie => { return { movie, inLib: this.props.library.has(movie.imdbID) } });
+        this.setState({ movieList });
     }
 
     render() {
         const search = this.state.search;
         const movieList = this.state.movieList;
+        const addToLibrary = this.props.addToLibrary;
+        const removeFromLibrary = this.props.removeFromLibrary;
         return (
             <Box>
                 <SearchInput
                     search={search} onSearchChange={this.searchChange} />
-                <MovieList movieList={movieList} />
+                <MovieList movieList={movieList} addToLibrary={addToLibrary} removeFromLibrary={removeFromLibrary} />
             </Box>
         );
     }

@@ -1,12 +1,20 @@
 import { Grid } from "@material-ui/core";
 import * as React from "react";
-import MovieCard, { Movie } from "./MovieCard";
+import { Movie } from "../api/library";
+import MovieCard from "./MovieCard";
 
-class MovieList extends React.Component<{ movieList: Movie[] }> {
+type Prop = {
+    movieList: { movie: Movie, inLib: boolean }[];
+    addToLibrary: (movie: Movie) => void;
+    removeFromLibrary: (imdb: string) => void;
+}
+class MovieList extends React.Component<Prop> {
     render() {
-        const list = this.props.movieList.map((movie) =>
-            <Grid item key={movie.imdbID}>
-                <MovieCard movie={movie} />
+        const addToLibrary = this.props.addToLibrary;
+        const removeFromLibrary = this.props.removeFromLibrary;
+        const list = this.props.movieList.map((m) =>
+            <Grid item key={m.movie.imdbID}>
+                <MovieCard movie={m.movie} inLib={m.inLib} addToLibrary={addToLibrary} removeFromLibrary={removeFromLibrary} />
             </Grid>
         );
         return (
