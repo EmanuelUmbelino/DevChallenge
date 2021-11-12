@@ -63,7 +63,8 @@ export class MoviesController {
         @Body(ValidationPipe) createMovieDto: CreateMovieDto,
     ): Promise<ReturnAddToLibraryDto> {
         const movie = await this.moviesService.createMovie(createMovieDto);
-        const review = await this.moviesService.addToLibrary(imdbID, user.id.toString());
+        const review: any = await this.moviesService.addToLibrary(imdbID, user.id.toString());
+        review.movie = movie;
         return {
             review,
             message: ['Movie added to library successfully'],

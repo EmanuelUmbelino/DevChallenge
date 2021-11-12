@@ -9,12 +9,29 @@ type Prop = {
     addToLibrary: (movie: Movie) => void;
     removeFromLibrary: (imdb: string) => void;
 }
-class MovieCard extends React.Component<Prop> {
+class MovieCard extends React.Component<Prop, { inLib: boolean }> {
+    constructor(props: Prop) {
+        super(props);
+        this.state = {
+            inLib: this.props.inLib,
+        };
+        this.addToLibrary = this.addToLibrary.bind(this);
+        this.removeFromLibrary = this.removeFromLibrary.bind(this);
+    }
+
+    async addToLibrary() {
+        this.props.addToLibrary(this.props.movie);
+        this.setState({ inLib: true });
+    }
+
+    async removeFromLibrary() {
+        this.props.removeFromLibrary(this.props.movie.imdbID);
+        this.setState({ inLib: false });
+    }
+
     render() {
         const movie = this.props.movie;
-        const inLib = this.props.inLib;
-        const addToLibrary = this.props.addToLibrary;
-        const removeFromLibrary = this.props.removeFromLibrary;
+        let inLib = this.state.inLib;
         return (
             <Card sx={{ maxWidth: 200 }}>
                 <CardMedia component="img" image={movie.poster} />
@@ -25,10 +42,10 @@ class MovieCard extends React.Component<Prop> {
                 </CardContent>
                 <CardActions sx={{ pt: 0 }}>
                     {inLib ?
-                        <Button fullWidth size="small" variant="outlined" color="error" startIcon={<LibraryAdd />} onClick={() => removeFromLibrary(movie.imdbID)}>
+                        <Button fullWidth size="small" variant="outlined" color="error" startIcon={<LibraryAdd />} onClick={this.removeFromLibrary}>
                             Remove from My Library
                         </Button> :
-                        <Button fullWidth size="small" variant="outlined" startIcon={<LibraryAdd />} onClick={() => addToLibrary(movie)}>
+                        <Button fullWidth size="small" variant="outlined" startIcon={<LibraryAdd />} onClick={this.addToLibrary}>
                             Add to My Library
                         </Button>
                     }
