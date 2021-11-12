@@ -60,7 +60,9 @@ export class MoviesController {
     async addToLibrary(
         @Param('imdbID') imdbID: string,
         @GetUser() user: User,
+        @Body(ValidationPipe) createMovieDto: CreateMovieDto,
     ): Promise<ReturnAddToLibraryDto> {
+        const movie = await this.moviesService.createMovie(createMovieDto);
         const review = await this.moviesService.addToLibrary(imdbID, user.id.toString());
         return {
             review,

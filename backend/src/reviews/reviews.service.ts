@@ -18,7 +18,7 @@ export class ReviewsService {
         const result = await this.reviewsRepository.update({ movie: movieImdbID, user: userId }, { enabled: true });
 
         if (result.affected > 0) {
-            const review: Review = await this.reviewsRepository.findOne({ loadRelationIds: true, where: { movie: movieImdbID, user: userId } });
+            const review: Review = await this.reviewsRepository.findOne({ relations: ['movie'], where: { movie: movieImdbID, user: userId } });
             return review;
         } else {
             return this.reviewsRepository.createReview(movieImdbID, userId);
@@ -26,7 +26,7 @@ export class ReviewsService {
     }
 
     async getReview(movieImdbID: string, userId: string): Promise<Review> {
-        const review: Review = await this.reviewsRepository.findOne({ loadRelationIds: true, where: { movie: movieImdbID, user: userId } });
+        const review: Review = await this.reviewsRepository.findOne({ relations: ['movie'], where: { movie: movieImdbID, user: userId } });
 
         if (!review) throw new NotFoundException(['Review not found']);
 
@@ -34,7 +34,7 @@ export class ReviewsService {
     }
 
     async getReviewsByUser(userId: string): Promise<Review[]> {
-        return this.reviewsRepository.find({ loadRelationIds: true, where: { user: userId } });
+        return this.reviewsRepository.find({ relations: ['movie'], where: { user: userId, enabled: true } });
     }
 
     async disableReview(movieImdbID: string, userId: string): Promise<Review> {

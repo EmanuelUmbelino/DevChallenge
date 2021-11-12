@@ -27,9 +27,9 @@ export class AuthController {
         @Body(ValidationPipe) createUserDto: CreateUserDto,
     ): Promise<ReturnLoginDto> {
         await this.authService.signUp(createUserDto);
-        const token = await this.authService.signIn(createUserDto);
+        const data = await this.authService.signIn(createUserDto);
         return {
-            token,
+            data,
             message: ['Registration successfully completed'],
         };
     }
@@ -40,9 +40,9 @@ export class AuthController {
     async signIn(
         @Body(ValidationPipe) credentiaslsDto: CredentialsDto,
     ): Promise<ReturnLoginDto> {
-        const token = await this.authService.signIn(credentiaslsDto);
+        const data = await this.authService.signIn(credentiaslsDto);
         return {
-            token,
+            data,
             message: ['Login successfully'],
         };
     }
